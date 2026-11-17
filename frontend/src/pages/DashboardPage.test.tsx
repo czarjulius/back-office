@@ -3,8 +3,10 @@ import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DashboardPage } from './DashboardPage';
 
-const logout = vi.fn();
-const listUsers = vi.fn();
+const { logout, listUsers } = vi.hoisted(() => ({
+  logout: vi.fn(),
+  listUsers: vi.fn(),
+}));
 
 vi.mock('../context/AuthContext', () => ({
   useAuth: () => ({
