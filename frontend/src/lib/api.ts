@@ -3,6 +3,29 @@ import type { SessionPayload, SignInInput, SignUpInput, User } from '../types/au
 const SESSION_STORAGE_KEY = 'back-office-session';
 export const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
+export type UserStatus = 'ACTIVE' | 'INACTIVE';
+
+export type UserRecord = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  status: UserStatus;
+  email: string | null;
+  loginCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type UserListResponse = {
+  data: UserRecord[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+};
+
 export function readSessionId(): string | null {
   if (typeof window === 'undefined') {
     return null;
@@ -66,5 +89,47 @@ export const authApi = {
   logout: () =>
     apiFetch<{ success: boolean; sessionId: string }>('/api/auth/logout', {
       method: 'POST',
+    }),
+};
+
+export const userApi = {
+  listUsers: ({ page, limit, search = '' }: { page: number; limit: number; search?: string }) => {
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: String(limit),
+    });
+
+    if (search.trim()) {
+      params.set('search', search.trim());
+    }
+
+    return apiFetch<UserListResponse>(`/api/users?${params.toString()}`);
+  },
+  createUser: (payload: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    status?: UserStatus;
+  }) =>
+    apiFetch<UserRecord>('/api/users', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  updateUser: (
+    id: string,
+    payload: {
+      firstName?: string;
+      lastName?: string;
+      status?: UserStatus;
+    },
+  ) =>
+    apiFetch<UserRecord>(`/api/users/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    }),
+  deleteUser: (id: string) =>
+    apiFetch<{ deleted: boolean; id: string }>(`/api/users/${id}`, {
+      method: 'DELETE',
     }),
 };
