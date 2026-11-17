@@ -2,11 +2,7 @@ import type { NextFunction, Request, Response } from 'express';
 import { UnauthorizedError } from '../lib/errors.js';
 import { sessionService } from '../modules/sessions/session.service.js';
 
-export const authenticate = async (
-  req: Request,
-  _res: Response,
-  next: NextFunction,
-) => {
+export const authenticate = async (req: Request, _res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
 
