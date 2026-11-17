@@ -137,10 +137,7 @@ export function DashboardPage() {
     }
   };
 
-  const pageNumbers = useMemo(
-    () => Array.from({ length: totalPages }, (_, index) => index + 1),
-    [totalPages],
-  );
+  const pageNumbers = useMemo(() => Array.from({ length: totalPages }, (_, index) => index + 1), [totalPages]);
 
   if (!user) {
     return null;
@@ -234,7 +231,10 @@ export function DashboardPage() {
 
               <label>
                 Status
-                <select value={form.status} onChange={(event) => handleFormChange('status', event.target.value as UserStatus)}>
+                <select
+                  value={form.status}
+                  onChange={(event) => handleFormChange('status', event.target.value as UserStatus)}
+                >
                   <option value="ACTIVE">ACTIVE</option>
                   <option value="INACTIVE">INACTIVE</option>
                 </select>
@@ -282,7 +282,9 @@ export function DashboardPage() {
                     <tbody>
                       {users.map((selectedUser) => (
                         <tr key={selectedUser.id}>
-                          <td>{selectedUser.firstName} {selectedUser.lastName}</td>
+                          <td>
+                            {selectedUser.firstName} {selectedUser.lastName}
+                          </td>
                           <td>{selectedUser.email ?? '—'}</td>
                           <td>
                             <span className={`status-badge ${selectedUser.status.toLowerCase()}`}>
@@ -292,10 +294,18 @@ export function DashboardPage() {
                           <td>{selectedUser.loginCount ?? 0}</td>
                           <td>
                             <div className="action-group">
-                              <button type="button" className="secondary-button small-button" onClick={() => handleEdit(selectedUser)}>
+                              <button
+                                type="button"
+                                className="secondary-button small-button"
+                                onClick={() => handleEdit(selectedUser)}
+                              >
                                 Edit
                               </button>
-                              <button type="button" className="secondary-button small-button danger-button" onClick={() => handleDelete(selectedUser)}>
+                              <button
+                                type="button"
+                                className="secondary-button small-button danger-button"
+                                onClick={() => handleDelete(selectedUser)}
+                              >
                                 Delete
                               </button>
                             </div>
@@ -309,7 +319,12 @@ export function DashboardPage() {
                 {users.length === 0 && <div className="no-results">No users found.</div>}
 
                 <div className="pagination">
-                  <button type="button" className="secondary-button small-button" disabled={page === 1} onClick={() => setPage((current) => Math.max(1, current - 1))}>
+                  <button
+                    type="button"
+                    className="secondary-button small-button"
+                    disabled={page === 1}
+                    onClick={() => setPage((current) => Math.max(1, current - 1))}
+                  >
                     Previous
                   </button>
 
@@ -326,7 +341,12 @@ export function DashboardPage() {
                     ))}
                   </div>
 
-                  <button type="button" className="secondary-button small-button" disabled={page >= totalPages} onClick={() => setPage((current) => Math.min(totalPages, current + 1))}>
+                  <button
+                    type="button"
+                    className="secondary-button small-button"
+                    disabled={page >= totalPages}
+                    onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
+                  >
                     Next
                   </button>
                 </div>
