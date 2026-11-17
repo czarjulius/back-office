@@ -3,6 +3,7 @@
 A production-ready back-office application built as a modular monolith.
 
 ## Stack
+
 - Frontend: React + TypeScript + Vite
 - Backend: Node.js + TypeScript + Express
 - Database: PostgreSQL + Prisma
@@ -18,6 +19,7 @@ npm run dev:backend
 ```
 
 ## Environment
+
 Copy the example environment files before running the app:
 
 ```bash
@@ -26,10 +28,12 @@ cp backend/.env.example backend/.env
 ```
 
 ## Working folders
+
 - frontend/
 - backend/
 
 ## Current status
+
 - Frontend foundation scaffolded and running
 - Backend TypeScript foundation scaffolded and compiling
 - Root workspace prepared for the next implementation phases
