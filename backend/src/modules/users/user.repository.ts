@@ -1,18 +1,37 @@
+import { Prisma } from '@prisma/client';
 import { prisma } from '../../lib/prisma.js';
 
-export type UserWithCredentials = Awaited<ReturnType<typeof prisma.user.findMany>>[number];
+export type UserWithCredentials = Prisma.UserGetPayload<{
+  include: {
+    credentials: {
+      select: { email: true };
+    };
+  };
+}>;
+
+function buildUserSearchWhere(search?: string): Prisma.UserWhereInput | undefined {
+  if (!search) {
+    return undefined;
+  }
+
+  return {
+    OR: [
+      { firstName: { contains: search, mode: Prisma.QueryMode.insensitive } },
+      { lastName: { contains: search, mode: Prisma.QueryMode.insensitive } },
+      {
+        credentials: {
+          is: {
+            email: { contains: search, mode: Prisma.QueryMode.insensitive },
+          },
+        },
+      },
+    ],
+  };
+}
 
 export const userRepository = {
   list: async ({ skip, take, search }: { skip: number; take: number; search?: string }) => {
-    const where = search
-      ? {
-          OR: [
-            { firstName: { contains: search, mode: 'insensitive' } },
-            { lastName: { contains: search, mode: 'insensitive' } },
-            { credentials: { email: { contains: search, mode: 'insensitive' } } },
-          ],
-        }
-      : {};
+    const where = buildUserSearchWhere(search);
 
     return prisma.user.findMany({
       where,
@@ -28,16 +47,7 @@ export const userRepository = {
   },
 
   count: async (search?: string) => {
-    const where = search
-      ? {
-          OR: [
-            { firstName: { contains: search, mode: 'insensitive' } },
-            { lastName: { contains: search, mode: 'insensitive' } },
-            { credentials: { email: { contains: search, mode: 'insensitive' } } },
-          ],
-        }
-      : {};
-
+    const where = buildUserSearchWhere(search);
     return prisma.user.count({ where });
   },
 

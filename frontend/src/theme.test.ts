@@ -39,4 +39,22 @@ describe('theme utilities', () => {
     expect(document.documentElement.style.colorScheme).toBe('light');
     expect(localStorage.getItem('back-office-theme')).toBe('light');
   });
+
+  it('ignores an invalid persisted value and uses system preference', () => {
+    localStorage.setItem('back-office-theme', 'sepia');
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    );
+
+    expect(getStoredTheme()).toBe('dark');
+  });
 });
