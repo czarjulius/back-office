@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { UserStatus } from '@prisma/client';
 
 const mocks = vi.hoisted(() => ({
   findCredential: vi.fn(),
@@ -36,7 +37,7 @@ const baseUser = {
   id: 'u1',
   firstName: 'Ada',
   lastName: 'Lovelace',
-  status: 'ACTIVE' as const,
+  status: UserStatus.ACTIVE,
   loginCount: 3,
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -79,7 +80,7 @@ describe('userService', () => {
     });
 
     expect(mocks.create).toHaveBeenCalledWith(
-      expect.objectContaining({ email: 'grace@example.com', status: 'ACTIVE', passwordHash: 'hashed' }),
+      expect.objectContaining({ email: 'grace@example.com', status: UserStatus.ACTIVE, passwordHash: 'hashed' }),
     );
   });
 
@@ -97,25 +98,25 @@ describe('userService', () => {
 
   it('updates a user', async () => {
     mocks.findById.mockResolvedValue(baseUser);
-    mocks.update.mockResolvedValue({ ...baseUser, firstName: 'Augusta Ada', status: 'INACTIVE' });
+    mocks.update.mockResolvedValue({ ...baseUser, firstName: 'Augusta Ada', status: UserStatus.INACTIVE });
 
-    const result = await userService.updateUser('u1', { firstName: 'Augusta Ada', status: 'INACTIVE' });
+    const result = await userService.updateUser('u1', { firstName: 'Augusta Ada', status: UserStatus.INACTIVE });
 
     expect(result.firstName).toBe('Augusta Ada');
     expect(mocks.update).toHaveBeenCalledWith('u1', {
       firstName: 'Augusta Ada',
       lastName: undefined,
-      status: 'INACTIVE',
+      status: UserStatus.INACTIVE,
     });
   });
 
   it('rejects updating a missing user', async () => {
     mocks.findById.mockResolvedValue(null);
-    await expect(userService.updateUser('missing', { status: 'INACTIVE' })).rejects.toMatchObject({ statusCode: 404 });
+    await expect(userService.updateUser('missing', { status: UserStatus.INACTIVE })).rejects.toMatchObject({ statusCode: 404 });
   });
 
   it('forbids name changes for inactive users', async () => {
-    mocks.findById.mockResolvedValue({ ...baseUser, status: 'INACTIVE' });
+    mocks.findById.mockResolvedValue({ ...baseUser, status: UserStatus.INACTIVE });
     await expect(userService.updateUser('u1', { firstName: 'Augusta Ada' })).rejects.toMatchObject({ statusCode: 403 });
   });
 

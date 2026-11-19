@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import type { UserStatus } from '@prisma/client';
 import { prisma } from '../../lib/prisma.js';
 
 export type UserWithCredentials = Prisma.UserGetPayload<{
@@ -64,7 +65,7 @@ export const userRepository = {
   create: async (data: {
     firstName: string;
     lastName: string;
-    status: 'ACTIVE' | 'INACTIVE';
+    status: UserStatus;
     email: string;
     passwordHash: string;
   }) =>
@@ -87,7 +88,7 @@ export const userRepository = {
       },
     }),
 
-  update: async (id: string, data: { firstName?: string; lastName?: string; status?: 'ACTIVE' | 'INACTIVE' }) =>
+  update: async (id: string, data: { firstName?: string; lastName?: string; status?: UserStatus }) =>
     prisma.user.update({
       where: { id },
       data,

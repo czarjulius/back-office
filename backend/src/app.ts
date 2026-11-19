@@ -15,7 +15,7 @@ app.get('/health', (_req, res) => {
 });
 
 app.get('/', (_req, res) => {
-  res.json({ message: 'Back-office API is running!!!.' });
+  res.json({ message: 'Back-office API is running!.' });
 });
 
 app.use('/api/auth', authRoutes);

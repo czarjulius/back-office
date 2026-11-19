@@ -1,6 +1,7 @@
 import express from 'express';
 import request from 'supertest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { UserStatus } from '@prisma/client';
 
 const mocks = vi.hoisted(() => ({
   authenticate: vi.fn((req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -78,7 +79,13 @@ describe('auth API routes', () => {
   it('POST /api/auth/signup validates input and creates a session', async () => {
     mocks.signUp.mockResolvedValue({
       sessionId: 'session-1',
-      user: { id: 'user-1', firstName: 'Ada', lastName: 'Lovelace', email: 'ada@example.com', status: 'ACTIVE' },
+      user: {
+        id: 'user-1',
+        firstName: 'Ada',
+        lastName: 'Lovelace',
+        email: 'ada@example.com',
+        status: UserStatus.ACTIVE,
+      },
     });
 
     const response = await request(app).post('/api/auth/signup').send({
@@ -188,7 +195,7 @@ describe('user API routes', () => {
       lastName: 'Hopper',
       email: 'grace@example.com',
       password: 'Password123!',
-      status: 'ACTIVE',
+      status: UserStatus.ACTIVE,
     });
 
     expect(response.status).toBe(201);
@@ -196,15 +203,15 @@ describe('user API routes', () => {
   });
 
   it('PATCH /api/users/:id updates a user', async () => {
-    mocks.updateUser.mockResolvedValue({ id: 'user-1', firstName: 'Augusta Ada', status: 'ACTIVE' });
+    mocks.updateUser.mockResolvedValue({ id: 'user-1', firstName: 'Augusta Ada', status: UserStatus.ACTIVE });
 
     const response = await request(app)
       .patch('/api/users/user-1')
       .set('Authorization', 'Bearer session-1')
-      .send({ firstName: 'Augusta Ada', status: 'ACTIVE' });
+      .send({ firstName: 'Augusta Ada', status: UserStatus.ACTIVE });
 
     expect(response.status).toBe(200);
-    expect(mocks.updateUser).toHaveBeenCalledWith('user-1', { firstName: 'Augusta Ada', status: 'ACTIVE' });
+    expect(mocks.updateUser).toHaveBeenCalledWith('user-1', { firstName: 'Augusta Ada', status: UserStatus.ACTIVE });
   });
 
   it('DELETE /api/users/:id deletes a user', async () => {

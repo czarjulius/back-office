@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { Prisma } from '@prisma/client';
+import { Prisma, UserStatus } from '@prisma/client';
 import { ConflictError, ForbiddenError, NotFoundError, UnauthorizedError } from '../../lib/errors.js';
 import { prisma } from '../../lib/prisma.js';
 import { sessionService } from '../sessions/session.service.js';
@@ -18,7 +18,7 @@ export const authService = {
         data: {
           firstName: payload.firstName,
           lastName: payload.lastName,
-          status: 'ACTIVE',
+          status: UserStatus.ACTIVE,
         },
       });
 
@@ -64,7 +64,7 @@ export const authService = {
       throw new UnauthorizedError('Invalid email or password');
     }
 
-    if (credential.user.status === 'INACTIVE') {
+    if (credential.user.status === UserStatus.INACTIVE) {
       throw new ForbiddenError('Inactive users cannot sign in');
     }
 

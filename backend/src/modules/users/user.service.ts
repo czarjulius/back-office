@@ -1,3 +1,4 @@
+import { UserStatus } from '@prisma/client';
 import { prisma } from '../../lib/prisma.js';
 import { ConflictError, ForbiddenError, NotFoundError } from '../../lib/errors.js';
 import { type UserWithCredentials, userRepository } from './user.repository.js';
@@ -7,13 +8,13 @@ export type CreateUserPayload = {
   lastName: string;
   email: string;
   password: string;
-  status?: 'ACTIVE' | 'INACTIVE';
+  status?: UserStatus;
 };
 
 export type UpdateUserPayload = {
   firstName?: string;
   lastName?: string;
-  status?: 'ACTIVE' | 'INACTIVE';
+  status?: UserStatus;
 };
 
 export const userService = {
@@ -75,7 +76,7 @@ export const userService = {
     const created = await userRepository.create({
       firstName: payload.firstName,
       lastName: payload.lastName,
-      status: payload.status ?? 'ACTIVE',
+      status: payload.status ?? UserStatus.ACTIVE,
       email: payload.email.toLowerCase(),
       passwordHash: await import('bcryptjs').then(({ default: bcrypt }) => bcrypt.hash(payload.password, 10)),
     });
@@ -100,7 +101,7 @@ export const userService = {
 
     const isNameChange = payload.firstName !== undefined || payload.lastName !== undefined;
 
-    if (current.status === 'INACTIVE' && isNameChange) {
+    if (current.status === UserStatus.INACTIVE && isNameChange) {
       throw new ForbiddenError('Cannot update the name of an inactive user');
     }
 

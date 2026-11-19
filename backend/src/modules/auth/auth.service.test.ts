@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { UserStatus } from '@prisma/client';
 
 const mocks = vi.hoisted(() => ({
   findCredential: vi.fn(),
@@ -45,7 +46,7 @@ describe('authService', () => {
     mocks.transaction.mockImplementation(async (callback: (tx: unknown) => unknown) =>
       callback({
         user: {
-          create: vi.fn().mockResolvedValue({ id: 'u1', firstName: 'Ada', lastName: 'Lovelace', status: 'ACTIVE' }),
+          create: vi.fn().mockResolvedValue({ id: 'u1', firstName: 'Ada', lastName: 'Lovelace', status: UserStatus.ACTIVE }),
         },
         credential: { create: mocks.createCredential },
       }),
@@ -79,7 +80,7 @@ describe('authService', () => {
     mocks.findCredential.mockResolvedValue({
       email: 'ada@example.com',
       passwordHash: 'hash',
-      user: { id: 'u1', firstName: 'Ada', lastName: 'Lovelace', status: 'ACTIVE' },
+      user: { id: 'u1', firstName: 'Ada', lastName: 'Lovelace', status: UserStatus.ACTIVE },
     });
     mocks.compare.mockResolvedValue(true);
     mocks.createSession.mockResolvedValue({ id: 's1' });
@@ -101,7 +102,7 @@ describe('authService', () => {
     mocks.findCredential.mockResolvedValue({
       email: 'ada@example.com',
       passwordHash: 'hash',
-      user: { status: 'ACTIVE' },
+      user: { status: UserStatus.ACTIVE },
     });
     mocks.compare.mockResolvedValue(false);
     await expect(authService.signIn({ email: 'ada@example.com', password: 'wrong-password' })).rejects.toMatchObject({
@@ -113,7 +114,7 @@ describe('authService', () => {
     mocks.findCredential.mockResolvedValue({
       email: 'ada@example.com',
       passwordHash: 'hash',
-      user: { id: 'u1', status: 'INACTIVE' },
+      user: { id: 'u1', status: UserStatus.INACTIVE },
     });
     mocks.compare.mockResolvedValue(true);
     await expect(authService.signIn({ email: 'ada@example.com', password: 'Password123!' })).rejects.toMatchObject({
@@ -126,7 +127,7 @@ describe('authService', () => {
       id: 'u1',
       firstName: 'Ada',
       lastName: 'Lovelace',
-      status: 'ACTIVE',
+      status: UserStatus.ACTIVE,
       loginCount: 2,
       credentials: { email: 'ada@example.com' },
       createdAt: new Date(),
@@ -142,7 +143,7 @@ describe('authService', () => {
       id: 'u1',
       firstName: 'Ada',
       lastName: 'Lovelace',
-      status: 'ACTIVE',
+      status: UserStatus.ACTIVE,
       loginCount: 0,
       credentials: null,
       createdAt: new Date(),

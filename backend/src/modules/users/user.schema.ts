@@ -1,13 +1,14 @@
 import { z } from 'zod';
+import { UserStatus } from '@prisma/client';
 
-export const userStatusSchema = z.enum(['ACTIVE', 'INACTIVE']);
+export const userStatusSchema = z.enum(UserStatus);
 
 export const createUserSchema = z.object({
   firstName: z.string().trim().min(1, 'First name is required'),
   lastName: z.string().trim().min(1, 'Last name is required'),
   email: z.string().trim().email('A valid email is required'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
-  status: userStatusSchema.optional().default('ACTIVE'),
+  status: userStatusSchema.optional().default(UserStatus.ACTIVE),
 });
 
 export const updateUserSchema = z.object({

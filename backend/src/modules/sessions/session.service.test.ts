@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { UserStatus } from '@prisma/client';
 
 const mocks = vi.hoisted(() => ({
   create: vi.fn(),
@@ -30,7 +31,7 @@ describe('sessionService', () => {
         id: 'u1',
         firstName: 'Ada',
         lastName: 'Lovelace',
-        status: 'ACTIVE',
+        status: UserStatus.ACTIVE,
         credentials: { email: 'ada@example.com' },
       },
     });
@@ -42,7 +43,7 @@ describe('sessionService', () => {
     mocks.findActiveById.mockResolvedValue({
       id: 's1',
       userId: 'u1',
-      user: { id: 'u1', firstName: 'Ada', lastName: 'Lovelace', status: 'ACTIVE', credentials: null },
+      user: { id: 'u1', firstName: 'Ada', lastName: 'Lovelace', status: UserStatus.ACTIVE, credentials: null },
     });
 
     expect((await sessionService.validateSession('s1')).user.email).toBeNull();

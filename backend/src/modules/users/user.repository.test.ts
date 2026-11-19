@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { UserStatus } from '@prisma/client';
 
 const mocks = vi.hoisted(() => ({
   findMany: vi.fn(),
@@ -80,7 +81,7 @@ describe('userRepository', () => {
     await userRepository.create({
       firstName: 'Ada',
       lastName: 'Lovelace',
-      status: 'ACTIVE',
+      status: UserStatus.ACTIVE,
       email: 'ada@example.com',
       passwordHash: 'hash',
     });
@@ -97,8 +98,10 @@ describe('userRepository', () => {
   });
 
   it('updates a user', async () => {
-    mocks.update.mockResolvedValue({ id: 'u1', status: 'INACTIVE' });
-    await expect(userRepository.update('u1', { status: 'INACTIVE' })).resolves.toMatchObject({ status: 'INACTIVE' });
+    mocks.update.mockResolvedValue({ id: 'u1', status: UserStatus.INACTIVE });
+    await expect(userRepository.update('u1', { status: UserStatus.INACTIVE })).resolves.toMatchObject({
+      status: UserStatus.INACTIVE,
+    });
   });
 
   it('removes a user', async () => {
