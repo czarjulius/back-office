@@ -84,4 +84,16 @@ describe('errorHandler', () => {
     const response = await request(app).get('/conflict');
     expect(response.status).toBe(500);
   });
+
+  it('falls back to 500 for plain errors carrying non-AppError properties', async () => {
+    const app = express();
+    app.get('/plain-error', (_req, _res, next) => {
+      next(new Error('A plain error'));
+    });
+    app.use(errorHandler);
+
+    const response = await request(app).get('/plain-error');
+    expect(response.status).toBe(500);
+    expect(response.body.message).toBe('Internal server error');
+  });
 });
