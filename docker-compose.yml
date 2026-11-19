@@ -34,11 +34,12 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules
-    command: npm run dev
+    command: ['sh', '-c', 'npm run prisma:deploy && npm run dev']
 
   frontend:
     build:
       context: ./frontend
+      target: build
     container_name: back-office-frontend
     restart: unless-stopped
     depends_on:

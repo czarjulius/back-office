@@ -11,6 +11,7 @@
     "test:coverage": "vitest run --coverage",
     "pretest": "prisma generate",
     "prisma:generate": "prisma generate",
+    "prisma:deploy": "prisma migrate deploy",
     "prisma:migrate": "prisma migrate dev --name init"
   },
   "dependencies": {

@@ -25,6 +25,7 @@ Install dependencies and run the app in separate terminals:
 
 ```bash
 npm install
+npm --prefix backend run prisma:deploy
 npm run dev:frontend
 npm run dev:backend
 ```
@@ -66,6 +67,8 @@ Start the local stack with PostgreSQL, backend, and frontend:
 docker compose up --build
 ```
 
+The backend applies pending checked-in Prisma migrations before starting. This creates the tables on a fresh database and preserves existing data in the Docker volume.
+
 Stop and clean the stack:
 
 ```bash
@@ -88,6 +91,7 @@ Run the backend in production mode:
 
 ```bash
 cd backend
+npm run prisma:deploy
 NODE_ENV=production PORT=3000 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/backoffice" node dist/index.js
 ```
 
@@ -104,6 +108,7 @@ VITE_API_URL=http://localhost:3000 npm run build
 - Keep secrets out of source control and set them in the deployment environment.
 - Use a reverse proxy or load balancer in front of the frontend and API if exposing both publicly.
 - For production, run the backend as a Node process with a health check and restart policy.
+- Apply checked-in database migrations with `npm run prisma:deploy` before starting the backend.
 - Keep the Prisma schema and generated client synchronized by running `npx prisma generate` after schema changes.
 
 ## Testing
