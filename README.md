@@ -108,6 +108,22 @@ VITE_API_URL=http://localhost:3000 npm run build
 
 ## Testing
 
+Run the complete unit and integration suite:
+
 ```bash
 npm test
+```
+
+Generate frontend or backend coverage reports:
+
+```bash
+npm run test:frontend:coverage
+npm run test:backend:coverage
+```
+
+Open the generated HTML reports:
+
+```bash
+open frontend/coverage/index.html
+open backend/coverage/index.html
 ```

@@ -13,10 +13,15 @@
     "lint:frontend": "npm --prefix frontend run lint",
     "test:frontend": "npm --prefix frontend run test",
     "test:backend": "npm --prefix backend run test",
+    "test:frontend:coverage": "npm --prefix frontend run test:coverage",
+    "test:backend:coverage": "npm --prefix backend run test:coverage",
     "test:e2e": "npm --prefix frontend run test:e2e",
     "test": "npm run test:frontend && npm run test:backend"
   },
   "engines": {
     "node": ">=22.12.0"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.1.12"
   }
 }
